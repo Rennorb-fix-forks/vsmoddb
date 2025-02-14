@@ -39,7 +39,7 @@ if(CDN !== 'bunny' || empty($config['assetserver']) || empty($config['bunnyendpo
 include "lib/core.php";
 
 
-foreach($con->getRows("SELECT * FROM `file`") as $file) {
+foreach($con->getAll("SELECT * FROM `file`") as $file) {
 	$error_on_missing_thumb = true;
 	$thumbnail_name = $file['thumbnailfilename'];
 	splitOffExtension($file['filename'], $noext, $ext);
@@ -72,11 +72,11 @@ foreach($con->getRows("SELECT * FROM `file`") as $file) {
 	);
 	$sql_where_clause = "WHERE fileid = ".$file['fileid'];
 
-	$upload_error = uploadToCdn($filepath, $remote_basename.$ext);
+	$upload_error = uploadToCdn($filepath, $remote_basename.'.'.$ext);
 	if($upload_error['error'])
 		echo "ERROR: FileId {$file['fileid']}: Failed file upload: {$upload_error['error']}. Not converted.";
 	else
-		$con->Execute("UPDATE `file` SET thumbnailfilename = ? $sql_where_clause", [$remote_basename.$ext]);
+		$con->Execute("UPDATE `file` SET thumbnailfilename = ? $sql_where_clause", [$remote_basename.'.'.$ext]);
 
 	$thumb_filepath = "$dir/$thumbnail_name";
 	if(!is_file($thumb_filepath)) {
@@ -86,7 +86,7 @@ foreach($con->getRows("SELECT * FROM `file`") as $file) {
 		continue;
 	}
 
-	$upload_error = uploadToCdn($thumb_filepath, $remote_basename.'_55_60'.$ext);
+	$upload_error = uploadToCdn($thumb_filepath, $remote_basename.'_55_60.'.$ext);
 	if($upload_error['error'])
 		echo "ERROR: FileId {$file['fileid']}: Failed thumb upload: {$upload_error['error']}. Incomplete upload.";
 	else 
