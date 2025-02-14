@@ -59,7 +59,7 @@ foreach($con->getAll("SELECT * FROM `file`") as $file) {
 		continue;
 	}
 
-	$filepath = "$dir/{$file['filename']}";
+	$filepath = "$localdir/{$file['filename']}";
 	if(!is_file($filepath)) {
 		echo "ERROR: FileId {$file['fileid']}: Missing file '$filepath', cannot upload.";
 		continue;
