@@ -34,7 +34,7 @@ $config = array();
 $config["basepath"] = getcwd() . '/';
 include "lib/config.php";
 
-if(CDN !== 'bunny' || empty($config['assetserver']) || empty($config['bunnyendpoint']) || empty($config['bunnyzone']) || empty($config['bunnykey'])) die('ERROR: CONFIGURE BUNNY!');
+if(CDN !== 'bunny' || empty($config['assetserver']) || empty($config['bunnyendpoint']) || empty($config['bunnyzone']) || empty($config['bunnykey'])) die('ERROR: CONFIGURE BUNNY!\n');
 
 include "lib/core.php";
 
@@ -55,13 +55,13 @@ foreach($con->getAll("SELECT * FROM `file`") as $file) {
 
 
 	if(!is_dir($localdir)) {
-		echo "ERROR: FileId {$file['fileid']}: Missing expected directory '$localdir', cannot upload.";
+		echo "ERROR: FileId {$file['fileid']}: Missing expected directory '$localdir', cannot upload.\n";
 		continue;
 	}
 
 	$filepath = "$localdir/{$file['filename']}";
 	if(!is_file($filepath)) {
-		echo "ERROR: FileId {$file['fileid']}: Missing file '$filepath', cannot upload.";
+		echo "ERROR: FileId {$file['fileid']}: Missing file '$filepath', cannot upload.\n";
 		continue;
 	}
 
@@ -74,21 +74,21 @@ foreach($con->getAll("SELECT * FROM `file`") as $file) {
 
 	$upload_error = uploadToCdn($filepath, $remote_basename.'.'.$ext);
 	if($upload_error['error'])
-		echo "ERROR: FileId {$file['fileid']}: Failed file upload: {$upload_error['error']}. Not converted.";
+		echo "ERROR: FileId {$file['fileid']}: Failed file upload: {$upload_error['error']}. Not converted.\n";
 	else
 		$con->Execute("UPDATE `file` SET thumbnailfilename = ? $sql_where_clause", [$remote_basename.'.'.$ext]);
 
 	$thumb_filepath = "$dir/$thumbnail_name";
 	if(!is_file($thumb_filepath)) {
 		if($error_on_missing_thumb)
-			echo "ERROR: FileId {$file['fileid']}: Missing thumb file '$thumb_filepath' even though a thumb filename was found in the database, incomplete upload.";
+			echo "ERROR: FileId {$file['fileid']}: Missing thumb file '$thumb_filepath' even though a thumb filename was found in the database, incomplete upload.\n";
 
 		continue;
 	}
 
 	$upload_error = uploadToCdn($thumb_filepath, $remote_basename.'_55_60.'.$ext);
 	if($upload_error['error'])
-		echo "ERROR: FileId {$file['fileid']}: Failed thumb upload: {$upload_error['error']}. Incomplete upload.";
+		echo "ERROR: FileId {$file['fileid']}: Failed thumb upload: {$upload_error['error']}. Incomplete upload.\n";
 	else 
 		$con->Execute("UPDATE `file` SET hasthumbnail = 1 $sql_where_clause");
 }
