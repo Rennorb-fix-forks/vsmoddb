@@ -78,7 +78,7 @@ foreach($con->getAll("SELECT * FROM `file`") as $file) {
 	else
 		$con->Execute("UPDATE `file` SET thumbnailfilename = ? $sql_where_clause", [$remote_basename.'.'.$ext]);
 
-	$thumb_filepath = "$dir/$thumbnail_name";
+	$thumb_filepath = "$localdir/$thumbnail_name";
 	if(!is_file($thumb_filepath)) {
 		if($error_on_missing_thumb)
 			echo "ERROR: FileId {$file['fileid']}: Missing thumb file '$thumb_filepath' even though a thumb filename was found in the database, incomplete upload.\n";
